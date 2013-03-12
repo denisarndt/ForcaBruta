@@ -1,0 +1,77 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Samples.Spin;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    SpinEdit1: TSpinEdit;
+    Memo1: TMemo;
+    Button2: TButton;
+    Memo2: TMemo;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  buffer,bufferOut: array of integer;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  a: Integer;
+begin
+memo1.Clear;
+setlength(buffer,spinedit1.Value);
+setlength(bufferOut,spinedit1.Value);
+for a := 0 to length(buffer)-1 do
+  begin
+  buffer[a]:=random(500000);
+  bufferOut[a]:=0;
+  memo1.Lines.Add(inttostr(buffer[a]));
+  end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  a: Integer;
+  indMaior, indBO: integer;
+  timeinit,timefinal:integer;
+begin
+memo2.Clear;
+indMaior:=0;
+indBO:=length(buffer)-1;
+timeinit:=gettickcount;
+while indBO>=0 do
+begin
+  for a := 0 to length(buffer)-1 do
+    begin
+    if buffer[a]>=buffer[indMaior] then
+      begin
+      bufferOut[indBO]:=buffer[a];
+      indMaior:=a;
+      end;
+    end;
+  buffer[indMaior]:=0;
+  dec(indBO);
+  indMaior:=0;
+end;
+buffer[indMaior]:=0;
+memo2.Lines.Add(inttostr(Gettickcount-timeInit));
+for a := 0 to length(bufferOut)-1 do memo2.Lines.Add(inttostr(bufferOut[a]));
+
+end;
+
+end.
